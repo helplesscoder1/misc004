@@ -48,3 +48,43 @@ public class GetContent {
         }
     }
 }
+
+
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import javax.net.ssl.HttpsURLConnection;
+
+public class GetContent {
+
+    public static String fetch(String urlString) {
+        try {
+            HttpsURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+
+            if (connection.getResponseCode() != HttpsURLConnection.HTTP_OK) {
+                return "Error: No content received";
+            }
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()));
+            StringBuilder html = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                html.append(line).append("\n");
+            }
+            reader.close();
+            connection.disconnect();
+
+            String result = html.toString().trim();
+            return result.isEmpty() ? "Error: No content received" : result;
+
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+}
