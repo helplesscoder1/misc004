@@ -1,3 +1,14 @@
+package com.example.gettingstartedapp;
+
+import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -26,5 +37,8 @@ public class MainActivity extends AppCompatActivity {
             String html = GetContent.fetch("https://172.20.1.21:5000/test");
             runOnUiThread(() -> contentText.setText(html));
         }).start();
+
+        // Post Android version to server
+        NetworkFunctions.postAndroidVersion();
     }
 }
