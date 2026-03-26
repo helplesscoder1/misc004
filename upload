@@ -14,6 +14,11 @@ def upload():
 
 
 
+import android.os.SystemClock;
+long uptimeMs = SystemClock.elapsedRealtime(); // time since boot, includes deep sleep
+
+
+
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
