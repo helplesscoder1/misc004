@@ -1,0 +1,55 @@
+@app.route("/upload", methods=["POST"])
+def upload():
+    output_path = "/tmp/received_example"
+
+    with open(output_path, "wb") as f:
+        while True:
+            chunk = request.stream.read(1024)
+            if not chunk:
+                break
+            f.write(chunk)
+
+    return {"status": "ok", "saved_to": output_path}, 200
+
+
+
+
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class ChunkedUpload {
+    public static void main(String[] args) {
+        String filePath = "/data/example.txt";
+        String targetUrl = "http://192.168.1.10:5000/upload";
+
+        try {
+            URL url = new URL(targetUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setChunkedStreamingMode(1024);
+            conn.setRequestProperty("Content-Type", "application/octet-stream");
+
+            try (FileInputStream fis = new FileInputStream(filePath);
+                 OutputStream os = conn.getOutputStream()) {
+
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    os.write(buffer, 0, bytesRead);
+                    os.flush();
+                }
+            }
+
+            int responseCode = conn.getResponseCode();
+            System.out.println("Response code: " + responseCode);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
